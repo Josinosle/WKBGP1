@@ -9,7 +9,6 @@ Participants will use the provided library to draw barriers, and use the WKB app
 - gaussian(x,potential): Creates a gaussian barrier at coordinate x with potential V.
 
 # Shape Library Functions
-- constructor: See above objects for their constructor parameters (see example below)
-  `Barrier1 = barrierlib.cube(x,V)`
+- constructor: See above objects for their constructor parameters. Example:```Barrier1 = barrierlib.cube(x,V)```
 - is_inside(x,function): Takes an x and a function in terms of x returns whether it is inside the barrier.
 - draw(ax): Draws the barrier on axes ax and returns.
