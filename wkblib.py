@@ -8,44 +8,34 @@ class Wavefunction:
         self.barriers = barriers
 
     def plot(self,ax,start,end):
-        x = np.linspace (start,end,100)
-        y = self.value(x)
+        x = np.linspace (start,end,10000)
+        y,trans_coeff = self.value(x)
         abs_y = np.abs(y)**2
         ax.plot(x,abs_y)
+        ax.text(0.02, 0.98, f'T = {trans_coeff:.4f}',
+                transform=ax.transAxes, fontsize=12,
+                verticalalignment='top', bbox=dict(boxstyle='round', facecolor='white', alpha=0.8))
         return ax
 
-    def value(self, x, sign=+1):
+    def value(self, x):
+        #hbar = 1.054571817e-34
         hbar = 1
 
         v = np.zeros_like(x)
         for b in self.barriers:
             v += b.function(x)
 
-        p = np.emath.sqrt(2 * self.mass * np.abs(self.energy - v))
-        allowed = self.energy > v
-
-        # Find turning points (E = V)
-        turning_points = np.where(np.diff(allowed.astype(int)) != 0)[0]
-        segments = np.split(np.arange(len(x)), turning_points + 1)
+        p = np.emath.sqrt(2 * self.mass * (self.energy - v))
 
         psi = np.zeros_like(x, dtype=complex)
-        s_total = 0.0  # to accumulate phase
 
-        for seg in segments:
-            xi = x[seg]
-            pi = p[seg]
-            allowed_seg = allowed[seg]
+        # Integrate p dx over this segment
+        s = np.zeros_like(x,dtype=complex)
+        s[1:] = np.cumsum(0.5 * (p[1:] + p[:-1]) * np.diff(x))
 
-            # Integrate p dx over this segment
-            s = np.zeros_like(xi)
-            s[1:] = np.cumsum(0.5 * (pi[1:] + pi[:-1]) * np.diff(xi))
-            s += s_total  # continue cumulative phase from previous segment
-            s_total = s[-1]
+        psi = (self.const / np.emath.sqrt(p)) * np.exp(1j * s / hbar)
 
-            if allowed_seg[0]:
-                psi[seg] = (self.const / np.sqrt(pi)) * np.exp(1j * sign * s / hbar) #Classical Case
-            else:
-                psi[seg] = (self.const / np.sqrt(pi)) * np.exp(-sign * s / hbar) #Barrier Case
-                trans_coeff = np.exp(-sign * s_total / hbar)
-                self.const *= trans_coeff
-        return psi
+        print(s)
+        print(s[-1])
+        trans_coeff = np.abs(np.exp(2j/hbar * s[-1]))
+        return psi,trans_coeff

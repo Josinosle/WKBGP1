@@ -14,7 +14,7 @@ class cube:
         return np.where(condition, self.v, 0)
 
     def draw(self, ax):
-        square = plt.Rectangle((self.x/2,0), self.w, self.v, fill=False, edgecolor='blue', linewidth=1, linestyle='--')
+        square = plt.Rectangle((self.x-self.w/2,0), self.w, self.v, fill=False, edgecolor='blue', linewidth=1, linestyle='--')
         ax.add_patch(square)
         return ax
 
