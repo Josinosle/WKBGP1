@@ -7,11 +7,15 @@ class Wavefunction:
         self.mass = mass
         self.barriers = barriers
 
+    def plot_energy(self,ax):
+        ax.hlines(self.energy,0,10,'k',alpha=0.5,color='blue')
+        return ax
+
     def plot(self,ax,start,end):
         x = np.linspace (start,end,10000)
         y,trans_coeff = self.value(x)
         abs_y = np.abs(y)**2
-        ax.plot(x,abs_y)
+        ax.plot(x,abs_y,alpha=1,color='black')
         ax.text(0.02, 0.98, f'T = {trans_coeff:.4f}',
                 transform=ax.transAxes, fontsize=12,
                 verticalalignment='top', bbox=dict(boxstyle='round', facecolor='white', alpha=0.8))

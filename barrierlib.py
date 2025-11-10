@@ -7,22 +7,22 @@ class cube:
     def __init__(self, x, width, potential):
         self.x = x
         self.w = width
-        self.v = potential
+        self.h = potential
 
     def function(self, a):
         condition = (a > self.x - self.w / 2) & (a < self.x + self.w / 2)
-        return np.where(condition, self.v, 0)
+        return np.where(condition, self.h, 0)
 
     def draw(self, ax):
-        square = plt.Rectangle((self.x-self.w/2,0), self.w, self.v, fill=False, edgecolor='blue', linewidth=1, linestyle='--')
+        square = plt.Rectangle((self.x-self.w/2,0), self.w, self.h, fill=False, edgecolor='blue', linewidth=1, linestyle='--')
         ax.add_patch(square)
         return ax
 
 class triangle:
-    def __init__(self, x, width, height):
+    def __init__(self, x, width, potential):
         self.x = x           # center of the triangle
         self.w = width       # base width
-        self.h = height      # maximum potential (peak height)
+        self.h = potential      # maximum potential (peak height)
 
     def function(self, a):
         # Create a triangular potential centered at self.x
@@ -43,4 +43,20 @@ class triangle:
         left = self.x - self.w / 2
         right = self.x + self.w / 2
         ax.plot([left, self.x, right], [0, self.h, 0], color='green', lw=1, linestyle='--')
+        return ax
+
+class gaussian:
+    def __init__(self, x, width, potential):
+        self.x = x
+        self.w = width
+        self.h = potential
+
+    def function(self, a):
+        v = np.zeros_like(a)
+        v = self.h * np.exp(- (a-self.x)**2 / (2*self.w**2))
+        return v
+
+    def draw(self, ax):
+        x = np.linspace(0, 10, 100)
+        ax.plot(x, self.function(x), color='red', lw=1, linestyle='--')
         return ax

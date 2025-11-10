@@ -5,17 +5,21 @@ import wkblib as wkb
 fig = plt.figure()
 ax = fig.add_subplot(111)
 
-Barrier1 = bl.cube(1,1,10)
+Barrier1 = bl.cube(1,0.5,10)
 ax = Barrier1.draw(ax)
-Barrier2 = bl.triangle(5,1,9)
+Barrier2 = bl.triangle(1.2,0.5,9)
 ax = Barrier2.draw(ax)
-ax.set_ylim(0,15)
 
-wavefunction = wkb.Wavefunction(1,
+Barrier3 = bl.gaussian(8,0.5,11)
+ax = Barrier3.draw(ax)
+#ax.set_ylim(0,1)
+
+wavefunction = wkb.Wavefunction(5,
                                 8,
                                 1,
                                 (Barrier1,Barrier2))
 ax = wavefunction.plot(ax,0,10)
+ax = wavefunction.plot_energy(ax)
 
 
 plt.show()
