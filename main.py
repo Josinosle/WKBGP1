@@ -18,13 +18,13 @@ ax = Barrier3.draw(ax)
 
 ax.set_xlim(0,20)
 
-Barrier1 = bl.triangle(4,0.5,4)
+Barrier1 = bl.cube(4,0.5,4)
 Barrier1.draw(ax)
-Barrier2 = bl.triangle(8,0.5,4)
+Barrier2 = bl.cube(8,0.5,4)
 Barrier2.draw(ax)
-Barrier3 = bl.triangle(12,0.5,4)
+Barrier3 = bl.cube(12,0.5,4)
 Barrier3.draw(ax)
-Barrier4 = bl.triangle(16,0.5,4)
+Barrier4 = bl.cube(16,0.5,4)
 Barrier4.draw(ax)
 
 wavefunction = wkb.Wavefunction(1,
@@ -37,4 +37,4 @@ wavefunction = wkb.Wavefunction(1,
 #ax = wavefunction.plot_energy(ax)
 #plt.show()
 
-wavefunction.plot_animation(ax,fig)
+wavefunction.plot_animation(ax,fig,save=True)

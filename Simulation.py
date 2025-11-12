@@ -132,6 +132,8 @@ def animate(frame):
 anim = FuncAnimation(fig, animate, init_func=init, frames=frames + pause_frames, 
                      interval=20, blit=False, repeat=True) #faster/smoother with blit=True, but doesnt update time in the title
 
+anim.save('wkb_animation.gif', dpi=80, writer='pillow')
+
 plt.tight_layout()
 plt.show()
 

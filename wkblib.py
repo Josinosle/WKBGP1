@@ -9,7 +9,7 @@ class Wavefunction:
         self.barriers = barriers
 
     def plot_energy(self,ax):
-        ax.hlines(self.energy,0,ax.get_xlim()[1],'k',alpha=0.5,color='blue')
+        ax.hlines(self.energy,0,ax.get_xlim()[1],'k',alpha=0.5,color='blue',linestyle="--")
         return ax
 
     def plot(self,ax):
@@ -25,42 +25,37 @@ class Wavefunction:
                 verticalalignment='top', bbox=dict(boxstyle='round', facecolor='white', alpha=0.8))
         return ax
 
-    def plot_animation(self,ax,fig):
-        dt = 0.001
+    def plot_animation(self,ax,fig,save=False):
+        dt = 0.01
         frames = 300  # change duration of simulation
         pause_frames = 30  # length of pause before restarting loop
+        line, = ax.plot([], [], linewidth=1.5, label='|Ψ(x,t)|', color='blue',
+                        zorder=1)  # creates empty line object that updates each time. [] means start with no data
 
-        def init():
-            line, = ax.plot([], [], linewidth=1.5, label='|Ψ(x,t)|', color='blue',
-                            zorder=1)  # creates empty line object that updates each time. [] means start with no data
-
-            line.set_data([], [])
-            return line,
-
-        def animate(frame,line):
-            if frame >= frames:
-                frame = frames - 1
-
+        def animate(frame):
             t = frame * dt
 
             ax_min = ax.get_xlim()[0]
             ax_max = ax.get_xlim()[1]
 
             x = np.linspace(ax_min, ax_max, 10000)
-            psi, trans_coeff = self.value(x)
-            psi = psi * np.exp(-1j*self.energy*t)
+            psi = (self.value(x))[0] * np.exp(-1j*self.energy*t)
 
-            line.set_data(x[1:-1], np.abs(psi) ** 2)  # updates with new data. prob density (blue envelope)
+            ax.set_ylim([0,ax.get_ylim()[1]])
+            ax.hlines(self.energy, 0, ax.get_xlim()[1], 'k', alpha=0.5, color='blue', linestyle="--")
+            line.set_data(x, self.energy+np.real(psi))  # updates with new data. prob density (blue envelope)
             ax.set_title(f'Wave Packet Through Potential Barrier (t= {t:.3f})',
                          fontsize=14)  # updates title to show current time
-            return line,
 
-        anim = FuncAnimation(fig, animate, init_func=init, frames=frames + pause_frames,
+        anim = FuncAnimation(fig, animate, frames=frames + pause_frames,
                              interval=20, blit=False,
                              repeat=True)  # faster/smoother with blit=True, but doesnt update time in the title
 
         fig.tight_layout()
+        if save:
+            anim.save('wkb_animation.gif', dpi=80, writer='pillow')
         fig.show()
+
 
     def value(self, x):
         hbar = 1
