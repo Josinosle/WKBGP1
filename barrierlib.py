@@ -1,5 +1,4 @@
 import matplotlib.pyplot as plt
-from matplotlib.patches import Polygon
 import numpy as np
 
 
@@ -52,7 +51,6 @@ class gaussian:
         self.h = potential
 
     def function(self, a):
-        v = np.zeros_like(a)
         v = self.h * np.exp(- (a-self.x)**2 / (2*self.w**2))
         return v
 

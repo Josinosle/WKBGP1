@@ -135,4 +135,3 @@ anim = FuncAnimation(fig, animate, init_func=init, frames=frames + pause_frames,
 plt.tight_layout()
 plt.show()
 
-
