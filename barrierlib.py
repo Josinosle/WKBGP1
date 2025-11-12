@@ -45,9 +45,9 @@ class triangle:
         return ax
 
 class gaussian:
-    def __init__(self, x, width, potential):
+    def __init__(self, x, std, potential):
         self.x = x
-        self.w = width
+        self.w = std
         self.h = potential
 
     def function(self, a):
@@ -55,6 +55,8 @@ class gaussian:
         return v
 
     def draw(self, ax):
-        x = np.linspace(0, 10, 100)
+        xmin,xmax = ax.get_xlim()
+
+        x = np.linspace(xmin,xmax,100)
         ax.plot(x, self.function(x), color='red', lw=1, linestyle='--')
         return ax

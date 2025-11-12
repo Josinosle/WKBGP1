@@ -40,6 +40,10 @@ class Wavefunction:
 
             x = np.linspace(ax_min, ax_max, 10000)
             psi = (self.value(x))[0] * np.exp(-1j*self.energy*t)
+            trans_coeff = self.value(x)[1]
+            ax.text(0.02, 0.98, f'T = {trans_coeff:.4f}',
+                    transform=ax.transAxes, fontsize=12,
+                    verticalalignment='top', bbox=dict(boxstyle='round', facecolor='white', alpha=0.8))
 
             ax.set_ylim([0,ax.get_ylim()[1]])
             ax.hlines(self.energy, 0, ax.get_xlim()[1], 'k', alpha=0.5, color='blue', linestyle="--")
@@ -51,7 +55,8 @@ class Wavefunction:
                              interval=20, blit=False,
                              repeat=True)  # faster/smoother with blit=True, but doesnt update time in the title
 
-        fig.tight_layout()
+        ax.set_xlabel("x")
+        ax.set_ylabel("Potential eV")
         if save:
             anim.save('wkb_animation.gif', dpi=80, writer='pillow')
         fig.show()
