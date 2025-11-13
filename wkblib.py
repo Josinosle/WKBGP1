@@ -12,55 +12,53 @@ class Wavefunction:
         ax.hlines(self.energy,0,ax.get_xlim()[1],'k',alpha=0.5,color='blue',linestyle="--")
         return ax
 
-    def plot(self,ax):
-        ax_min = ax.get_xlim()[0]
-        ax_max = ax.get_xlim()[1]
+    def plot(self,ax,fig,save=False,animated=False):
+        if animated:
+            dt, frames, pause_frames = (0.01, 300, 30)
+            line, = ax.plot([], [], linewidth=1.5, label='|Ψ(x,t)|', color='blue',
+                            zorder=1)  # creates empty line object that updates each time. [] means start with no data
 
-        x = np.linspace (ax_min,ax_max,10000)
-        y,trans_coeff = self.value(x)
-        abs_y = (np.abs(y))**2
-        ax.plot(x,abs_y,alpha=1,color='black')
-        ax.text(0.02, 0.98, f'T = {trans_coeff:.4f}',
-                transform=ax.transAxes, fontsize=12,
-                verticalalignment='top', bbox=dict(boxstyle='round', facecolor='white', alpha=0.8))
-        return ax
+            def animate(frame):
+                t = frame * dt
 
-    def plot_animation(self,ax,fig,save=False):
-        dt = 0.01
-        frames = 300  # change duration of simulation
-        pause_frames = 30  # length of pause before restarting loop
-        line, = ax.plot([], [], linewidth=1.5, label='|Ψ(x,t)|', color='blue',
-                        zorder=1)  # creates empty line object that updates each time. [] means start with no data
+                ax_min, ax_max = ax.get_xlim()
 
-        def animate(frame):
-            t = frame * dt
+                x = np.linspace(ax_min, ax_max, 10000)
+                psi = (self.value(x))[0] * np.exp(-1j * self.energy * t)
+                trans_coeff = self.value(x)[1]
+                ax.text(0.02, 0.98, f'T = {trans_coeff:.4f}',
+                        transform=ax.transAxes, fontsize=12,
+                        verticalalignment='top', bbox=dict(boxstyle='round', facecolor='white', alpha=0.8))
 
-            ax_min = ax.get_xlim()[0]
-            ax_max = ax.get_xlim()[1]
+                ax.set_ylim([0, ax.get_ylim()[1]])
+                ax.hlines(self.energy, 0, ax.get_xlim()[1], 'k', alpha=0.5, color='blue', linestyle="--")
+                line.set_data(x, self.energy + np.real(psi))  # updates with new data. prob density (blue envelope)
+                ax.set_title(f'Wave Packet Through Potential Barrier (t= {t:.3f})',
+                             fontsize=14)  # updates title to show current time
 
-            x = np.linspace(ax_min, ax_max, 10000)
-            psi = (self.value(x))[0] * np.exp(-1j*self.energy*t)
-            trans_coeff = self.value(x)[1]
+            anim = FuncAnimation(fig, animate, frames=frames + pause_frames,
+                                 interval=20, blit=False,
+                                 repeat=True)  # faster/smoother with blit=True, but doesnt update time in the title
+
+            ax.set_xlabel("x")
+            ax.set_ylabel("Potential eV")
+            if save:
+                anim.save('wkb_animation.gif', dpi=80, writer='pillow')
+            fig.show()
+
+        else:
+            ax_min, ax_max = ax.get_xlim()
+
+            x = np.linspace (ax_min,ax_max,10000)
+            y,trans_coeff = self.value(x)
+            y = np.real(y+self.energy)
+            ax.plot(x,y,alpha=1,color='black')
             ax.text(0.02, 0.98, f'T = {trans_coeff:.4f}',
                     transform=ax.transAxes, fontsize=12,
                     verticalalignment='top', bbox=dict(boxstyle='round', facecolor='white', alpha=0.8))
-
-            ax.set_ylim([0,ax.get_ylim()[1]])
-            ax.hlines(self.energy, 0, ax.get_xlim()[1], 'k', alpha=0.5, color='blue', linestyle="--")
-            line.set_data(x, self.energy+np.real(psi))  # updates with new data. prob density (blue envelope)
-            ax.set_title(f'Wave Packet Through Potential Barrier (t= {t:.3f})',
-                         fontsize=14)  # updates title to show current time
-
-        anim = FuncAnimation(fig, animate, frames=frames + pause_frames,
-                             interval=20, blit=False,
-                             repeat=True)  # faster/smoother with blit=True, but doesnt update time in the title
-
-        ax.set_xlabel("x")
-        ax.set_ylabel("Potential eV")
-        if save:
-            anim.save('wkb_animation.gif', dpi=80, writer='pillow')
-        fig.show()
-
+            fig.show()
+            if save:
+                fig.savefig('wkb_plot.png')
 
     def value(self, x):
         hbar = 1
