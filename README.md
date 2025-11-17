@@ -118,7 +118,9 @@ wavefunction.plot(ax,fig,save=False,animated=False)
 ```
 
 # Simulation
-A simulation section is provided plotting the probability density of a wavefunction in the classical analytical method over a step barrier. this section is hard-coded and can be run independently without the rest of the library, to help you get an understanding of a more sophisticated simulation, also including the reflection.
+A simulation section is provided plotting the wavefunction in the classical analytical method over a step barrier. this section is hard-coded and can be run independently without the rest of the library, to help you get an understanding of a more sophisticated simulation, also including the reflection.
+
+This is not using the wkb approximation used in the library and only should be edited by advanced users. Simona has added in depth comments in order to help your way around the document.
 
 # Credits
 Simona - simulation section and also providing the bulk of the code for animating the wavefunction plots over time
