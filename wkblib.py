@@ -8,10 +8,6 @@ class Wavefunction:
         self.mass = mass
         self.barriers = barriers
 
-    def plot_energy(self,ax):
-        ax.hlines(self.energy,0,ax.get_xlim()[1],'k',alpha=0.5,color='blue',linestyle="--")
-        return ax
-
     def plot(self,ax,fig,save=False,animated=False):
         if animated:
             dt, frames, pause_frames = (0.01, 300, 30)
@@ -53,6 +49,7 @@ class Wavefunction:
             y,trans_coeff = self.value(x)
             y = np.real(y+self.energy)
             ax.plot(x,y,alpha=1,color='black')
+            ax.hlines(self.energy, 0, ax.get_xlim()[1], 'k', alpha=0.5, color='blue', linestyle="--")
             ax.text(0.02, 0.98, f'T = {trans_coeff:.4f}',
                     transform=ax.transAxes, fontsize=12,
                     verticalalignment='top', bbox=dict(boxstyle='round', facecolor='white', alpha=0.8))
