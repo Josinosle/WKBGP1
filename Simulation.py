@@ -125,14 +125,14 @@ def animate(frame):
     for i in range(len(c)):
         Psi = Psi + c[i]*psi[i]*np.exp(-1j*E[i]*t/hbar)
     
-    line.set_data(x[1:-1], np.abs(Psi)**2) #updates with new data. prob density (blue envelope)
+    line.set_data(x[1:-1], Psi) #updates with new data. prob density (blue envelope)
     ax.set_title(f'Wave Packet Through Potential Barrier (t= {t:.3f})', fontsize=14) #updates title to show current time
     return line, 
 
 anim = FuncAnimation(fig, animate, init_func=init, frames=frames + pause_frames, 
                      interval=20, blit=False, repeat=True) #faster/smoother with blit=True, but doesnt update time in the title
 
-anim.save('wkb_animation.gif', dpi=80, writer='pillow')
+anim.save('classic_animation.gif', dpi=80, writer='pillow')
 
 plt.tight_layout()
 plt.show()
